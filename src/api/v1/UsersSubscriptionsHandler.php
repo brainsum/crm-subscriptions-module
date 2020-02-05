@@ -76,16 +76,22 @@ class UsersSubscriptionsHandler extends ApiHandler
     private function formatSubscription($subscription, $subscriptionType)
     {
         $access = [];
-        foreach ($subscriptionType->related('content_access')->order('content_access.sorting') as $contentAccess) {
-            $access[] = $contentAccess->content_access->name;
-        }
 
-        return [
-            'id' => $subscription->id,
+        $formatted_subscription = [
             'start_at' => $subscription->start_time->format('c'),
             'end_at' => $subscription->end_time->format('c'),
             'code' => $subscriptionType->code,
-            'access' => $access,
+            'access' => []
         ];
+
+        foreach ($subscriptionType->related('content_access')->order('content_access.sorting') as $contentAccess) {
+            $formatted_subscription['access'][] = $contentAccess->content_access->name;
+            if ($contentAccess->content_access->name == 'articles') {
+                $viewed_articles = unserialize($subscription->articles);
+                $formatted_subscription['remaining_articles'] = max(0, $subscriptionType->length - count($viewed_articles));
+            }
+        }
+
+        return $formatted_subscription;
     }
 }

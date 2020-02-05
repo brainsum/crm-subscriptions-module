@@ -82,6 +82,10 @@ class SubscriptionFormFactory
             $defaults = $subscription->toArray();
         }
 
+        $article_list = isset($defaults['articles']) ? unserialize($defaults['articles'], ['allowed_classes' => ['array']]) : [];
+
+        $defaults['articles'] = is_array($article_list) ? implode("\n", $article_list) : "";
+
         $form = new Form;
 
         $form->setRenderer(new BootstrapRenderer());
@@ -141,6 +145,11 @@ class SubscriptionFormFactory
             ->getControlPrototype()
             ->addAttributes(['class' => 'autosize']);
 
+        $form->addTextArea('articles', 'subscriptions.data.subscriptions.fields.articles')
+            ->setAttribute('placeholder', 'subscriptions.data.subscriptions.placeholder.articles')
+            ->getControlPrototype()
+            ->addAttributes(['class' => 'autosize']);
+
         $form->addSelect('address_id', 'subscriptions.data.subscriptions.fields.address_id', $this->addressesRepository->addressesSelect($user, false))
             ->setPrompt('--');
 
@@ -194,6 +203,11 @@ class SubscriptionFormFactory
         $subscriptionType = $this->subscriptionTypesRepository->find($values['subscription_type_id']);
         $user = $this->usersRepository->find($values['user_id']);
 
+        $article_list = preg_split('/\r\n|\r|\n/', $values['articles']);
+
+        $articles = serialize($article_list);
+        $values['articles'] = $articles;
+
         if (isset($values['subscription_id'])) {
             $subscriptionId = $values['subscription_id'];
             unset($values['subscription_id']);
@@ -232,7 +246,8 @@ class SubscriptionFormFactory
                 $startTime,
                 $endTime,
                 $values['note'],
-                $address
+                $address,
+                $articles
             );
             $this->onSave->__invoke($subscription);
         }

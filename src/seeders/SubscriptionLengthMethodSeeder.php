@@ -42,5 +42,18 @@ class SubscriptionLengthMethodSeeder implements ISeeder
         } else {
             $output->writeln("  * subscription extension method <info>{$method}</info> exists");
         }
+
+        $method = 'article_count';
+        if (!$this->subscriptionLengthMethodsRepository->exists($method)) {
+            $this->subscriptionLengthMethodsRepository->add(
+                $method,
+                'Article count',
+                'Calculate subscription length based on number of articles viewed.',
+                300
+            );
+            $output->writeln("  <comment>* subscription extension method <info>{$method}</info> created</comment>");
+        } else {
+            $output->writeln("  * subscription extension method <info>{$method}</info> exists");
+        }
     }
 }

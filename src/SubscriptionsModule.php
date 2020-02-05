@@ -241,6 +241,14 @@ class SubscriptionsModule extends CrmModule
                 \Crm\ApiModule\Authorization\BearerTokenAuthorization::class
             )
         );
+
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(
+                new ApiIdentifier('1', 'article', 'view'),
+                \Crm\CountSubscriptionModule\Api\v1\SubsctiptionUpdateOnArticelViewHandler::class,
+                \Crm\UsersModule\Auth\UserTokenAuthorization::class
+            )
+        );
     }
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)

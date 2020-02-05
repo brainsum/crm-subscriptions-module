@@ -43,6 +43,7 @@ services:
 	- Crm\SubscriptionsModule\Components\SubscriptionEndsStatsFactoryInterface
 	- Crm\SubscriptionsModule\Commands\ChangeSubscriptionsStateCommand
 	- Crm\SubscriptionsModule\Api\v1\UsersSubscriptionsHandler
+	- Crm\SubscriptionsModule\Api\v1\SubsctiptionUpdateOnArticelViewHandler
 	- Crm\SubscriptionsModule\Subscription\ActualUserSubscription
 	- Crm\SubscriptionsModule\Events\AddressRemovedHandler
 	- Crm\SubscriptionsModule\Hermes\GenerateSubscriptionHandler
@@ -88,6 +89,7 @@ services:
 		class: Crm\SubscriptionsModule\Length\LengthMethodFactory
 		setup:
 			- registerExtension('fix_days', Crm\SubscriptionsModule\Length\FixDaysLengthMethod())
+			- registerExtension('article_count', Crm\SubscriptionsModule\Length\ArticleCountLengthMethod())
 
 	filterLoader:
 		setup:

@@ -39,6 +39,12 @@ class ContentAccessSeeder implements ISeeder
         $class = 'label label-warning';
         $sorting = 300;
         $this->seedContentAccess($name, $description, $class, $sorting);
+
+        $name = 'articles';
+        $description = 'Number of Articles';
+        $class = 'label label-success';
+        $sorting = 100;
+        $this->seedContentAccess($name, $description, $class, $sorting);
     }
 
     private function seedContentAccess($name, $description, $class = '', $sorting = 100)
