@@ -77,41 +77,41 @@ class SubsctiptionUpdateOnArticelViewHandler extends ApiHandler
         }
 
         return $timeSub ? $timeSub : ($countSub ? $countSub : false);
-      }
+    }
 
-      private function countView($subscription, $url) {
+    private function countView($subscription, $url) {
         $sub_type = $subscription->subscription_type;
         $values = $subscription->toArray();
         if ($sub_type->code == 'article_count') {
-          $viewed_articles = unserialize($values['articles'], ['allowed_classes' => ['array']]);
+            $viewed_articles = unserialize($values['articles'], ['allowed_classes' => ['array']]);
 
-          if (!is_array($viewed_articles)) {
-            $viewed_articles = [];
-          }
+            if (!is_array($viewed_articles)) {
+                $viewed_articles = [];
+            }
 
-          if (in_array($url, $viewed_articles)) {
+            if (in_array($url, $viewed_articles)) {
+                return [
+                    'status' => 'ok',
+                    'remaining' => $sub_type->length - count($viewed_articles)
+                ];
+            }
+
+            if (count($viewed_articles) < $sub_type->length) {
+                $viewed_articles[] = $url;
+                $values['articles'] = serialize(array_filter($viewed_articles));
+                $this->subscriptionsRepository->update($subscription, $values);
+                return [
+                    'status' => 'ok',
+                    'remaining' => $sub_type->length - count($viewed_articles)
+                ];
+            }
             return [
-              'status' => 'ok',
-              'remaining' => $sub_type->length - count($viewed_articles)
+                'status' => 'not more articles',
+                'remaining' => $sub_type->length - count($viewed_articles)
             ];
-          }
-
-          if (count($viewed_articles) < $sub_type->length) {
-            $viewed_articles[] = $url;
-            $values['articles'] = serialize(array_filter($viewed_articles));
-            $this->subscriptionsRepository->update($subscription, $values);
-            return [
-              'status' => 'ok',
-              'remaining' => $sub_type->length - count($viewed_articles)
-            ];
-          }
-          return [
-            'status' => 'not more articles',
-            'remaining' => $sub_type->length - count($viewed_articles)
-          ];
         }
         return [
-          'status' => 'ok',
+            'status' => 'ok',
         ];
     }
 

@@ -245,7 +245,7 @@ class SubscriptionsModule extends CrmModule
         $apiRoutersContainer->attachRouter(
             new ApiRoute(
                 new ApiIdentifier('1', 'article', 'view'),
-                \Crm\CountSubscriptionModule\Api\v1\SubsctiptionUpdateOnArticelViewHandler::class,
+                \Crm\SubscriptionsModule\Api\v1\SubsctiptionUpdateOnArticelViewHandler::class,
                 \Crm\UsersModule\Auth\UserTokenAuthorization::class
             )
         );
